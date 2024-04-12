@@ -87,7 +87,7 @@ func work(ctx context.Context, i int, tasks chan struct{}) {
 		case <-tasks:
 			// some work
 			log.Printf("%v: doing work...", i)
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Millisecond * 100)
 		}
 	}
 }
@@ -102,7 +102,7 @@ func main() {
 	// this is just sugar for:
 	//   defer cancel()
 	//   defer done()
-	//   defer wait()
+	//   defer wait(time.Second * 60)
 	defer somecontext.Cleanup(cancel, done, wait)
 
 	tasks := make(chan struct{}, 1000000)
@@ -120,6 +120,8 @@ func main() {
 
 	// get sick of waiting and cancel the workers
 	cancel()
+
+	// now that cancel has been triggered, our deferred cleanup should gracefully shut us down
 }
 ```
 
