@@ -7,7 +7,7 @@ import (
 	"github.com/initialed85/some/somesync"
 )
 
-const timeout = time.Second * 60
+const defaultTimeout = time.Second * 60
 
 type wgKeyType struct{}
 
@@ -59,7 +59,16 @@ func WithCancelAndDoneAndWait(ctx context.Context, wgs ...somesync.WaitGroup) (c
 	return ctx, cancel, wg.Done, wg.Wait
 }
 
-func Cleanup(cancel context.CancelFunc, done somesync.DoneFunc, wait somesync.WaitFunc) {
+func Cleanup(cancel context.CancelFunc, done somesync.DoneFunc, wait somesync.WaitFunc, timeouts ...time.Duration) {
+	if len(timeouts) > 1 {
+		panic("somegoutils.context: Cleanup must have timeouts not specified or specific exactly once")
+	}
+
+	timeout := defaultTimeout
+	if len(timeouts) == 1 {
+		timeout = timeouts[0]
+	}
+
 	cancel()
 	done()
 	wait(timeout)

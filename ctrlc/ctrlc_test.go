@@ -18,7 +18,7 @@ func TestWaitForCtrlC(t *testing.T) {
 	waiting := true
 
 	go func() {
-		WaitForCtrlC(ctx, cancel, wait)
+		WaitForCtrlC(ctx, cancel, done, wait)
 		waiting = false
 	}()
 

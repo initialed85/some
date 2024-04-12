@@ -15,7 +15,7 @@ var noopCancelOrDone = func() {}
 
 var noopWait = func(...time.Duration) {}
 
-func WaitForCtrlC(ctx context.Context, cancel context.CancelFunc, done somesync.DoneFunc, wait somesync.WaitFunc) {
+func WaitForCtrlC(ctx context.Context, cancel context.CancelFunc, done somesync.DoneFunc, wait somesync.WaitFunc, timeouts ...time.Duration) {
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -32,7 +32,7 @@ func WaitForCtrlC(ctx context.Context, cancel context.CancelFunc, done somesync.
 		wait = noopWait
 	}
 
-	defer somecontext.Cleanup(cancel, done, wait)
+	defer somecontext.Cleanup(cancel, done, wait, timeouts...)
 
 	// 128 in case Ctrl + C gets spammed
 	c := make(chan os.Signal, 128)

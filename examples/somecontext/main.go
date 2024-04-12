@@ -40,7 +40,7 @@ func main() {
 	// this is just sugar for:
 	//   defer cancel()
 	//   defer done()
-	//   defer wait()
+	//   defer wait(time.Second * 60)
 	defer somecontext.Cleanup(cancel, done, wait)
 
 	tasks := make(chan struct{}, 1000000)
